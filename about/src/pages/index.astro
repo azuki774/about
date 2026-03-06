@@ -6,6 +6,9 @@ import Section from "../components/Section.astro";
 <BaseLayout title="azuki.blue - ポートフォリオ & サーバ紹介">
   <main class="portfolio-main">
     <section id="hero" class="hero">
+      <div class="hero-icon">
+        <!-- 自分のアイコン用。差し替え時は <img src="..." alt="" width="256" height="256" /> を入れる -->
+      </div>
       <h1>azuki.blue</h1>
       <p class="hero-catch">ポートフォリオなど（Coming soon）</p>
     </section>
@@ -47,6 +50,21 @@ import Section from "../components/Section.astro";
     padding: 2rem 0;
     border-bottom: 1px solid var(--border-color);
     background: linear-gradient(135deg, rgba(236, 72, 153, 0.12) 0%, rgba(251, 207, 232, 0.2) 100%);
+  }
+  .hero-icon {
+    width: 256px;
+    height: 256px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    background: var(--border-color);
+    flex-shrink: 0;
+  }
+  .hero-icon img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
   }
   .hero h1 {
     margin: 0 0 0.5rem;
