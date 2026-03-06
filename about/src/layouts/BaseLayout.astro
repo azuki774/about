@@ -13,6 +13,69 @@ const { title } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
+    <header class="site-header">
+      <a href="/" class="site-title">azuki.blue</a>
+      <nav class="site-nav">
+        <a href="#about">azuki について</a>
+        <a href="#azkey">azkey.azuki.blue</a>
+        <a href="#nostr">nostr.azuki.blue</a>
+        <a href="/paravi/">パラパラ動画</a>
+      </nav>
+    </header>
     <slot />
+    <footer class="site-footer">
+      <p>azuki.blue</p>
+    </footer>
   </body>
 </html>
+
+<style is:global>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+    line-height: 1.5;
+  }
+</style>
+
+<style>
+  .site-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+  }
+  .site-title {
+    font-weight: bold;
+    text-decoration: none;
+    color: inherit;
+  }
+  .site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .site-nav a {
+    text-decoration: none;
+    color: inherit;
+    font-size: 0.9rem;
+  }
+  .site-nav a:hover {
+    text-decoration: underline;
+  }
+  .site-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color, #e0e0e0);
+    margin-top: 2rem;
+    font-size: 0.9rem;
+  }
+  .site-footer p {
+    margin: 0;
+  }
+</style>

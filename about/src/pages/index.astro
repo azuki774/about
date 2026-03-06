@@ -1,10 +1,90 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/Section.astro";
 ---
 
-<BaseLayout title="About">
-  <main>
-    <h1>About</h1>
-    <p>Static site generated with Bun + Astro.</p>
+<BaseLayout title="azuki.blue - ポートフォリオ">
+  <main class="portfolio-main">
+    <section id="hero" class="hero">
+      <h1>azuki.blue</h1>
+      <p class="hero-catch">ポートフォリオ・活動紹介（Coming soon）</p>
+    </section>
+
+    <Section id="about" title="azuki について">
+      <div class="subsection">
+        <h3>各種アカウント</h3>
+        <p>Coming soon</p>
+      </div>
+      <div class="subsection">
+        <h3>スキル（主にITエンジニアリングについて）</h3>
+        <p>Coming soon</p>
+      </div>
+    </Section>
+
+    <Section id="azkey" title="azkey.azuki.blue について">
+      <p>Coming soon</p>
+    </Section>
+
+    <Section id="nostr" title="nostr.azuki.blue について">
+      <p>Coming soon</p>
+    </Section>
+
+    <section id="parapara" class="parapara-section">
+      <h2>パラパラ動画</h2>
+      <p>別ページで紹介予定です。</p>
+      <p><a href="/paravi/">パラパラ動画のページへ</a>（準備中）</p>
+    </section>
   </main>
 </BaseLayout>
+
+<style>
+  .portfolio-main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 1.5rem 2rem;
+  }
+  .hero {
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
+  }
+  .hero h1 {
+    margin: 0 0 0.5rem;
+    font-size: 1.75rem;
+  }
+  .hero-catch {
+    margin: 0;
+    opacity: 0.8;
+  }
+  .subsection {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 4px;
+  }
+  .subsection:last-child {
+    margin-bottom: 0;
+  }
+  .subsection h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .subsection p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+  .parapara-section {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
+  }
+  .parapara-section h2 {
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+  }
+  .parapara-section p {
+    margin: 0 0 0.5rem;
+  }
+  .parapara-section a {
+    color: inherit;
+  }
+</style>
