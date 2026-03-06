@@ -1,0 +1,24 @@
+/**
+ * 保存用: 現在の案（ピンク基調・ヘッダーだけ水色）
+ * 復元するときは :root の中身を BaseLayout.astro の <style is:global> に戻す。
+ */
+
+:root {
+  /* 水色・ピンク・緑パレット（ピンク寄り） */
+  --color-aqua: #67e8f9;
+  --color-pink: #ec4899;
+  --color-green: #2dd4bf;
+  /* 派生色（ピンク基調） */
+  --bg-base: #fdf2f8;
+  --bg-sub: rgba(236, 72, 153, 0.08);
+  --text-primary: #4c0519;
+  --text-secondary: #831843;
+  --border-color: rgba(236, 72, 153, 0.35);
+  --accent: #be185d;
+  /* ヘッダーだけ水色 */
+  --header-bg: rgba(103, 232, 249, 0.25);
+  --header-border: rgba(103, 232, 249, 0.5);
+}
+
+/* この案での hero 背景（index.astro 用） */
+/* .hero { background: linear-gradient(135deg, rgba(236, 72, 153, 0.12) 0%, rgba(251, 207, 232, 0.2) 100%); } */

@@ -11,6 +11,9 @@ const { title } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
   </head>
   <body>
     <header class="site-header">
@@ -30,6 +33,21 @@ const { title } = Astro.props;
 </html>
 
 <style is:global>
+  :root {
+    /* 水色・ピンク（ピンク基調・ヘッダーだけ水色） */
+    --color-aqua: #67e8f9;
+    --color-pink: #ec4899;
+    --color-green: #2dd4bf;
+    --bg-base: #fdf2f8;
+    --bg-sub: rgba(236, 72, 153, 0.08);
+    --text-primary: #4c0519;
+    --text-secondary: #831843;
+    --border-color: rgba(236, 72, 153, 0.35);
+    --accent: #be185d;
+    --header-bg: rgba(103, 232, 249, 0.25);
+    --header-border: rgba(103, 232, 249, 0.5);
+    --font-body: "Noto Sans JP", sans-serif;
+  }
   *,
   *::before,
   *::after {
@@ -37,15 +55,18 @@ const { title } = Astro.props;
   }
   body {
     margin: 0;
-    font-family: system-ui, -apple-system, sans-serif;
-    line-height: 1.5;
+    font-family: var(--font-body);
+    line-height: 1.6;
+    background-color: var(--bg-base);
+    color: var(--text-primary);
   }
 </style>
 
 <style>
   .site-header {
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--border-color, #e0e0e0);
+    border-bottom: 1px solid var(--header-border);
+    background-color: var(--header-bg);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -54,7 +75,11 @@ const { title } = Astro.props;
   .site-title {
     font-weight: bold;
     text-decoration: none;
-    color: inherit;
+    color: var(--accent);
+  }
+  .site-title:hover {
+    color: var(--color-pink);
+    text-decoration: underline;
   }
   .site-nav {
     display: flex;
@@ -63,15 +88,17 @@ const { title } = Astro.props;
   }
   .site-nav a {
     text-decoration: none;
-    color: inherit;
+    color: var(--accent);
     font-size: 0.9rem;
   }
   .site-nav a:hover {
+    color: var(--color-pink);
     text-decoration: underline;
   }
   .site-footer {
     padding: 1rem 1.5rem;
-    border-top: 1px solid var(--border-color, #e0e0e0);
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-sub);
     margin-top: 2rem;
     font-size: 0.9rem;
   }
