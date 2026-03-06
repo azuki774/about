@@ -45,21 +45,25 @@ import Section from "../components/Section.astro";
   }
   .hero {
     padding: 2rem 0;
-    border-bottom: 1px solid var(--border-color, #e0e0e0);
+    border-bottom: 1px solid var(--border-color);
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.12) 0%, rgba(251, 207, 232, 0.2) 100%);
   }
   .hero h1 {
     margin: 0 0 0.5rem;
     font-size: 1.75rem;
+    color: var(--accent);
   }
   .hero-catch {
     margin: 0;
-    opacity: 0.8;
+    color: var(--text-secondary);
+    opacity: 0.9;
   }
   .subsection {
     margin-bottom: 1rem;
     padding: 1rem;
-    border: 1px solid var(--border-color, #e0e0e0);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
+    background-color: var(--bg-sub);
   }
   .subsection:last-child {
     margin-bottom: 0;
@@ -68,6 +72,7 @@ import Section from "../components/Section.astro";
     margin: 0 0 0.5rem;
     font-size: 1rem;
     font-weight: 600;
+    color: var(--color-pink);
   }
   .subsection p {
     margin: 0;
@@ -75,16 +80,22 @@ import Section from "../components/Section.astro";
   }
   .parapara-section {
     padding: 1.5rem 0;
-    border-bottom: 1px solid var(--border-color, #e0e0e0);
+    border-bottom: 1px solid var(--border-color);
   }
   .parapara-section h2 {
     margin: 0 0 1rem;
     font-size: 1.25rem;
+    color: var(--accent);
   }
   .parapara-section p {
     margin: 0 0 0.5rem;
   }
   .parapara-section a {
-    color: inherit;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .parapara-section a:hover {
+    color: var(--color-pink);
+    text-decoration: underline;
   }
 </style>

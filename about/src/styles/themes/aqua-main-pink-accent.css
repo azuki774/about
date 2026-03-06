@@ -1,0 +1,20 @@
+/**
+ * 保存用: 水色メイン・ピンクはアクセント
+ * 復元時は :root を BaseLayout.astro に、.hero を index.astro に戻す。
+ */
+
+:root {
+  --color-aqua: #67e8f9;
+  --color-pink: #f472b6;
+  --color-green: #2dd4bf;
+  --bg-base: #ecfeff;
+  --bg-sub: rgba(103, 232, 249, 0.2);
+  --text-primary: #164e63;
+  --text-secondary: #0e7490;
+  --border-color: rgba(103, 232, 249, 0.5);
+  --accent: #db2777;
+  --header-bg: rgba(103, 232, 249, 0.4);
+  --header-border: rgba(45, 212, 191, 0.6);
+}
+
+/* .hero { background: linear-gradient(135deg, rgba(103, 232, 249, 0.25) 0%, rgba(236, 254, 255, 0.5) 100%); } */

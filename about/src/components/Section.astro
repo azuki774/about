@@ -13,7 +13,7 @@ const { title, id } = Astro.props;
 <style>
   section {
     padding: 1.5rem 0;
-    border-bottom: 1px solid var(--border-color, #e0e0e0);
+    border-bottom: 1px solid var(--border-color);
   }
   section:last-of-type {
     border-bottom: none;
@@ -21,5 +21,6 @@ const { title, id } = Astro.props;
   h2 {
     margin: 0 0 1rem;
     font-size: 1.25rem;
+    color: var(--accent);
   }
 </style>
