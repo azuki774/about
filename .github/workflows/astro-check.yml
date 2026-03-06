@@ -1,0 +1,32 @@
+name: Astro Check
+on:
+  pull_request:
+    paths:
+      - 'about/**'
+      - '.github/workflows/astro-check.yml'
+
+jobs:
+  astro-check:
+    name: Astro Build & Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        working-directory: about
+        run: bun install --frozen-lockfile
+
+      - name: Astro check (typecheck)
+        working-directory: about
+        run: bunx astro check
+
+      - name: Astro build
+        working-directory: about
+        run: bun run build
