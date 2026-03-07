@@ -1,3 +1,20 @@
+## コミット・タグ・PR（AIエージェント向け）
+
+- **コミット**: [Conventional Commits](https://www.conventionalcommits.org/) に従う。`feat:`, `fix:`, `docs:`, `chore:` などの type を付ける。
+- **タグ**: [Calendar Versioning（CalVer）](https://calver.org/) を採用。形式は `YYYY.MM` または `YYYY.MM.MICRO`（例: `2025.3`, `2025.3.1`）。詳細はリポジトリルートの `CONTRIBUTING.md` を参照。
+- **PR タイトル**: **英語**で書く。**PR 本文**: 原則**日本語**で書く。
+
+## コミット前レビュー（サブエージェント）
+
+コミット作成前に、**レビュー担当**として次の 3 点を実行する。
+
+1. **自然言語の文法** — 変更した文章（README、コメント、UI 文言、ドキュメント等）の表記・文法を確認する。
+2. **セキュリティ観点** — 機密情報の露出、インジェクション、不適切な依存の追加等がないか確認する。
+3. **CI の確認** — `.github/workflows/` の該当ワークフローが通るか、必要なチェックが揃っているか確認する。
+
+問題があれば修正してからコミットする。プロジェクトの `pre-commit-review` スキルがあればその手順に従う。
+
+---
 
 Default to using Bun instead of Node.js.
 
