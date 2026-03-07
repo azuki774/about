@@ -1,0 +1,14 @@
+.git/
+.direnv/
+.cursor/
+.github/
+result
+result-*
+**/node_modules/
+**/dist/
+*.md
+.env
+.env.*
+.envrc
+flake.nix
+flake.lock
