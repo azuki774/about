@@ -7,29 +7,87 @@ import Section from "../components/Section.astro";
   <main class="portfolio-main">
     <section id="hero" class="hero">
       <div class="hero-icon">
-        <!-- 自分のアイコン用。差し替え時は <img src="..." alt="" width="256" height="256" /> を入れる -->
+        <img src="/icon.jpg" alt="azuki のアイコン" width="256" height="256" />
       </div>
-      <h1>azuki.blue</h1>
-      <p class="hero-catch">ポートフォリオなど（Coming soon）</p>
+      <h1>azuki (Ashley Skye)</h1>
+      <p class="hero-catch">パソコンカタカタエンジニアで生計を立てています。</p>
+      <p class="hero-catch">モータースポーツとか FPS が好きです。</p>
+      <p class="hero-catch">最近は VRChat にいたり、ひたすら自鯖の SNS に籠もっています。</p>
     </section>
 
     <Section id="about" title="azuki について">
       <div class="subsection">
         <h3>各種アカウント</h3>
-        <p>Coming soon</p>
+        <ul class="account-list">
+          <li><a href="https://github.com/azuki774" target="_blank" rel="noopener noreferrer"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.11.82-.26.82-.58v-2.02c-3.34.73-4.04-1.61-4.04-1.61a3.18 3.18 0 0 0-1.33-1.76c-1.09-.74.08-.73.08-.73a2.52 2.52 0 0 1 1.84 1.24 2.56 2.56 0 0 0 3.5 1 2.56 2.56 0 0 1 .76-1.6c-2.67-.3-5.47-1.33-5.47-5.93a4.64 4.64 0 0 1 1.24-3.22 4.3 4.3 0 0 1 .12-3.18s1-.32 3.3 1.23a11.38 11.38 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23a4.3 4.3 0 0 1 .12 3.18 4.64 4.64 0 0 1 1.23 3.22c0 4.61-2.81 5.63-5.48 5.92a2.86 2.86 0 0 1 .82 2.22v3.29c0 .32.21.7.82.58A12 12 0 0 0 12 .3"/></svg>GitHub: azuki774</a></li>
+          <li><a href="https://azkey.azuki.blue/@azuki" target="_blank" rel="noopener noreferrer"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M21.33 19.56c-.34 1.74-3.03 3.65-6.12 4.02-1.61.2-3.2.38-4.89.3-2.77-.13-4.95-.67-4.95-.67v.78c.36 2.63 2.68 2.79 4.88 2.86 2.22.07 4.2-.55 4.2-.55l.09 2.01s-1.55.83-4.32.99c-1.53.08-3.43-.04-5.64-.63C.74 27.1.09 22.32 0 17.47v-5.4C0 5.38 3.92 3.66 3.92 3.66 5.88 2.72 9.36 2.5 12.98 2.5h.08c3.62 0 7.1.22 9.06 1.16 0 0 3.92 1.72 3.92 8.37 0 0 .05 4.77-1.71 8.03zM18 9.29c0-1.37-.35-2.46-1.06-3.27-.73-.82-1.69-1.23-2.9-1.23-1.4 0-2.46.54-3.15 1.61L10 8.1l-.89-1.7c-.7-1.08-1.75-1.62-3.16-1.62-1.2 0-2.16.42-2.89 1.24C2.35 6.83 2 7.93 2 9.3v6.72h2.66V9.5c0-1.38.58-2.08 1.74-2.08 1.28 0 1.93.83 1.93 2.47v3.57h2.65V9.89c0-1.64.64-2.47 1.93-2.47 1.16 0 1.74.7 1.74 2.08v6.52H18z"/></svg>Fediverse: @azuki@azkey.azuki.blue</a></li>
+          <li><a href="https://njump.me/npub1t3hk2zz6xuq7g3gljtf8jtzt0a967f6rchmnkd39vt4egjxelgmqngqav8" target="_blank" rel="noopener noreferrer"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-1.5-1.5L6 12l3.5-3.5L11 10l-2 2 2 2 5-5 1.5 1.5z"/></svg>Nostr: Ashley</a></li>
+          <li><a href="https://x.com/azuki774s" target="_blank" rel="noopener noreferrer"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Twitter: @azuki774s</a></li>
+          <li><a href="https://www.youtube.com/@azuki774" target="_blank" rel="noopener noreferrer"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.56 31.56 0 0 0 0 12a31.56 31.56 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.88.55 9.38.55 9.38.55s7.5 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.56 31.56 0 0 0 24 12a31.56 31.56 0 0 0-.5-5.81zM9.55 15.57V8.43L15.82 12z"/></svg>YouTube: @azuki774</a></li>
+        </ul>
       </div>
       <div class="subsection">
         <h3>スキル（主にITエンジニアリングについて）</h3>
-        <p>Coming soon</p>
+        <ul class="skill-list">
+          <li>仕事レベル
+            <ul>
+              <li>Go</li>
+              <li>Python</li>
+              <li>Kubernetes</li>
+              <li>Terraform</li>
+            </ul>
+          </li>
+          <li>勉強中
+            <ul>
+              <li>AWS</li>
+              <li>Observability（Grafana, OpenTelemetry など）</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="subsection">
+        <h3>好きなもの</h3>
+        <div class="tag-group">
+          <span class="tag-label">趣味・ゲーム</span>
+          <div class="tags">
+            <span class="tag">VRChat</span>
+            <span class="tag">iRacing</span>
+            <span class="tag">Slay the Spire</span>
+            <span class="tag">BF6</span>
+            <span class="tag">Valorant</span>
+            <span class="tag">FF14</span>
+            <span class="tag">テキサスホールデム</span>
+            <span class="tag">計算機代数</span>
+          </div>
+        </div>
+        <div class="tag-group">
+          <span class="tag-label">技術</span>
+          <div class="tags">
+            <span class="tag">Go</span>
+            <span class="tag">Kubernetes</span>
+            <span class="tag">Python</span>
+            <span class="tag">AWS</span>
+            <span class="tag">Terraform</span>
+            <span class="tag">Grafana</span>
+            <span class="tag">GitHub Actions</span>
+            <span class="tag">Docker</span>
+          </div>
+        </div>
       </div>
     </Section>
 
     <Section id="azkey" title="azkey.azuki.blue （あずきインターネット）について">
-      <p>Coming soon</p>
+      <p>自宅内のオンプレ Kubernetes ネットワークで構築している Misskey サーバです。オブジェクトストレージには Cloudflare R2 を使用しています。今のところ招待制で稼働中です。</p>
+      <p>主な話題（連合先）は、ITエンジニア系、VRChat 系ほか日常です。入りたい方はお気軽にご連絡ください。</p>
+      <p>Misskey 本家からの微フォークにて運用されており、ライセンスに従い <a href="https://github.com/azuki774/azkey" target="_blank" rel="noopener noreferrer">GitHub リポジトリ</a>にて公開しています。</p>
+      <p class="note">2025年8月18日ごろから運用開始</p>
     </Section>
 
     <Section id="nostr" title="nostr.azuki.blue （Nostrリレーサーバ）について">
-      <p>Coming soon</p>
+      <p>Go 製の半自作の Nostr リレーサーバを運用しています。日本語圏からのアクセスを対象にしています（判定には Cloudflare を利用しています）。</p>
+      <p>ご自由にご利用ください。リレーの稼働状況は <a href="https://nostr.watch/relays/wss/nostr.azuki.blue" target="_blank" rel="noopener noreferrer">nostr.watch</a> で確認できます。</p>
+      <p>ソースコードは <a href="https://github.com/azuki774/khatru-redbean" target="_blank" rel="noopener noreferrer">GitHub リポジトリ</a>にて公開しています。</p>
+      <p class="note">2025年12月7日ごろから運用開始</p>
     </Section>
 
     <section id="parapara" class="parapara-section">
@@ -95,6 +153,103 @@ import Section from "../components/Section.astro";
   .subsection p {
     margin: 0;
     font-size: 0.9rem;
+  }
+  .account-list {
+    margin: 0;
+    padding-left: 1.2rem;
+    list-style: none;
+    font-size: 0.9rem;
+  }
+  .account-list li {
+    margin-bottom: 0.35rem;
+  }
+  .account-list li::before {
+    content: "▸ ";
+    color: var(--color-pink);
+  }
+  .icon {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+    margin-right: 0.3rem;
+  }
+  .account-list a {
+    color: var(--accent);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+  .account-list a:hover {
+    color: var(--color-pink);
+    text-decoration: underline;
+  }
+  .skill-list {
+    margin: 0;
+    padding-left: 1.2rem;
+    list-style: none;
+    font-size: 0.9rem;
+  }
+  .skill-list > li {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .skill-list > li::before {
+    content: "● ";
+    color: var(--color-pink);
+  }
+  .skill-list ul {
+    margin: 0.25rem 0 0;
+    padding-left: 1.2rem;
+    list-style: disc;
+    font-weight: 400;
+  }
+  .skill-list ul li {
+    margin-bottom: 0.15rem;
+  }
+  .tag-group {
+    margin-bottom: 0.6rem;
+  }
+  .tag-group:last-child {
+    margin-bottom: 0;
+  }
+  .tag-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.3rem;
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.8rem;
+    border-radius: 999px;
+    background-color: rgba(236, 72, 153, 0.12);
+    border: 1px solid rgba(236, 72, 153, 0.25);
+    color: var(--accent);
+  }
+  :global(section p) {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+  }
+  :global(section a) {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  :global(section a:hover) {
+    color: var(--color-pink);
+    text-decoration: underline;
+  }
+  .note {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    opacity: 0.8;
   }
   .parapara-section {
     padding: 1.5rem 0;
