@@ -18,6 +18,21 @@ bun run ./src/main.ts
 
 `MICROCMS_BASE_URL` は `https://YOUR_SERVICE.microcms.io` の形式を想定します。
 
+```bash
+export YOUTUBE_API_KEY="YOUR_YOUTUBE_API_KEY"
+export YOUTUBE_PLAYLIST_ID="PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+export MICROCMS_BASE_URL="https://YOUR_SERVICE.microcms.io"
+export MICROCMS_API_KEY="YOUR_MICROCMS_API_KEY"
+```
+
+`YOUTUBE_PLAYLIST_ID` には、プレイリスト URL の `list` パラメータの値をそのまま入れます。
+
+例:
+
+```text
+https://www.youtube.com/playlist?list=PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
 ## 同期ルール
 
 - 照合キーは `youtubeVideoId`
