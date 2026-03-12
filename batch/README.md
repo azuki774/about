@@ -1,6 +1,6 @@
-# sync batch
+# about-paravi-sync
 
-YouTube のプレイリストから動画情報を取得し、`microCMS` の `videos` API へ同期するバッチです。
+YouTube のプレイリストから動画情報を取得し、`microCMS` の `videos` API へ同期するバッチコンテナです。
 
 ## 使い方
 

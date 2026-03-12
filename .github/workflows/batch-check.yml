@@ -1,0 +1,36 @@
+name: Batch Check
+
+on:
+  pull_request:
+    paths:
+      - 'batch/**'
+      - '.github/workflows/batch-check.yml'
+
+jobs:
+  batch-check:
+    name: Batch Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.10
+
+      - name: Run batch tests
+        working-directory: batch
+        run: bun test
+
+  batch-docker-build:
+    name: Batch Docker Build Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build batch Docker image
+        run: docker build -t about-paravi-sync:test batch
