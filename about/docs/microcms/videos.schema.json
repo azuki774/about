@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "service": "microcms",
+  "endpoint": "videos",
+  "displayName": "パラパラ動画",
+  "description": "パラパラ動画ページで表示する公開動画のマスターデータ。",
+  "defaultQuery": {
+    "filters": "isPublic[equals]true",
+    "orders": "-youtubePublishedAt"
+  },
+  "fields": [
+    {
+      "fieldId": "youtubeVideoId",
+      "label": "YouTube Video ID",
+      "type": "text",
+      "required": true,
+      "notes": "埋め込みURLに利用する動画ID。例: dQw4w9WgXcQ"
+    },
+    {
+      "fieldId": "playlistItemId",
+      "label": "Playlist Item ID",
+      "type": "text",
+      "required": false,
+      "notes": "YouTubeプレイリスト同期時の対応付け用。"
+    },
+    {
+      "fieldId": "youtubeTitle",
+      "label": "YouTube Title",
+      "type": "text",
+      "required": true,
+      "notes": "YouTube由来の元タイトル。同期ワーカーが更新する想定。"
+    },
+    {
+      "fieldId": "youtubePublishedAt",
+      "label": "YouTube Published At",
+      "type": "datetime",
+      "required": true,
+      "notes": "デフォルト並び順に使う公開日時。新しい順で表示する。"
+    },
+    {
+      "fieldId": "displayTitle",
+      "label": "Display Title",
+      "type": "text",
+      "required": false,
+      "notes": "公開画面用の上書きタイトル。未設定時は youtubeTitle を使う。"
+    },
+    {
+      "fieldId": "downloadUrl",
+      "label": "Download URL",
+      "type": "text",
+      "required": false,
+      "notes": "配布用のURL。1動画につき1つだけ持つ。"
+    },
+    {
+      "fieldId": "isPublic",
+      "label": "Is Public",
+      "type": "boolean",
+      "required": true,
+      "default": false,
+      "notes": "公開ページに表示してよいかどうか。"
+    }
+  ]
+}

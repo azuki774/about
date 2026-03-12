@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "mock:cms": "python3 mock_microcms.py"
   },
   "dependencies": {
     "@astrojs/node": "^9.5.4",
