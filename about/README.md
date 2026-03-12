@@ -61,6 +61,7 @@ Astro はファイルベースルーティングです。`src/pages/` に `.astr
 
 ## 追加した主なファイル
 
+- `src/pages/paravi/index.astro`: パラパラ動画の一覧ページ
 - `src/lib/videos.ts`: microCMS / mock API の取得処理
 - `mock_microcms.py`: 開発用の 1 ファイル mock API
 - `docs/microcms/videos.schema.json`: repo 上の microCMS スキーママスター
