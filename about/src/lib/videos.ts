@@ -28,6 +28,15 @@ function toOptionalString(value: unknown): string | undefined {
   return trimmed.length > 0 ? trimmed : undefined;
 }
 
+function getEnvValue(name: "MICROCMS_BASE_URL" | "MICROCMS_API_KEY"): string | undefined {
+  const buildTimeValue = toOptionalString(import.meta.env[name]);
+  if (buildTimeValue) {
+    return buildTimeValue;
+  }
+
+  return toOptionalString(process.env[name]);
+}
+
 function normalizeVideoRecord(value: unknown): VideoRecord {
   if (!value || typeof value !== "object") {
     throw new Error("動画データの形式が不正です。");
@@ -55,8 +64,8 @@ function normalizeVideoRecord(value: unknown): VideoRecord {
   };
 }
 
-function getMicroCmsBaseUrl(): string {
-  const configuredBaseUrl = toOptionalString(import.meta.env.MICROCMS_BASE_URL);
+function getMicroCmsBaseUrl(): string | undefined {
+  const configuredBaseUrl = getEnvValue("MICROCMS_BASE_URL");
   if (configuredBaseUrl) {
     return configuredBaseUrl.replace(/\/+$/, "");
   }
@@ -65,15 +74,15 @@ function getMicroCmsBaseUrl(): string {
     return DEFAULT_DEV_BASE_URL;
   }
 
-  throw new Error("MICROCMS_BASE_URL が設定されていません。");
+  return undefined;
 }
 
 function createHeaders(): HeadersInit {
-  const apiKey = toOptionalString(import.meta.env.MICROCMS_API_KEY);
+  const apiKey = getEnvValue("MICROCMS_API_KEY");
   return apiKey ? { "X-MICROCMS-API-KEY": apiKey } : {};
 }
 
-async function fetchVideosPage(offset: number): Promise<MicroCmsListResponse<VideoRecord>> {
+async function fetchVideosPage(baseUrl: string, offset: number): Promise<MicroCmsListResponse<VideoRecord>> {
   const params = new URLSearchParams({
     limit: String(DEFAULT_LIMIT),
     offset: String(offset),
@@ -81,7 +90,7 @@ async function fetchVideosPage(offset: number): Promise<MicroCmsListResponse<Vid
     orders: "-youtubePublishedAt",
   });
 
-  const response = await fetch(`${getMicroCmsBaseUrl()}/api/v1/videos?${params.toString()}`, {
+  const response = await fetch(`${baseUrl}/api/v1/videos?${params.toString()}`, {
     headers: createHeaders(),
     cache: "no-store",
   });
@@ -100,20 +109,34 @@ async function fetchVideosPage(offset: number): Promise<MicroCmsListResponse<Vid
 }
 
 export async function fetchPublicVideos(): Promise<VideoRecord[]> {
+  const baseUrl = getMicroCmsBaseUrl();
+  if (!baseUrl) {
+    console.error("[paravi] MICROCMS_BASE_URL is not configured.");
+    return [];
+  }
+
   const videos: VideoRecord[] = [];
   let offset = 0;
 
-  while (true) {
-    const page = await fetchVideosPage(offset);
-    videos.push(...page.contents);
+  try {
+    while (true) {
+      const page = await fetchVideosPage(baseUrl, offset);
+      videos.push(...page.contents);
 
-    offset += page.limit;
-    if (offset >= page.totalCount || page.contents.length === 0) {
-      break;
+      offset += page.limit;
+      if (offset >= page.totalCount || page.contents.length === 0) {
+        break;
+      }
     }
-  }
 
-  return videos;
+    return videos;
+  } catch (error) {
+    console.error("[paravi] Failed to fetch videos.", {
+      baseUrl,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return [];
+  }
 }
 
 export function getVideoTitle(video: VideoRecord): string {
