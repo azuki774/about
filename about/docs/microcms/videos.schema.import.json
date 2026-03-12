@@ -1,0 +1,47 @@
+{
+  "apiFields": [
+    {
+      "fieldId": "youtubeVideoId",
+      "name": "YouTube Video ID",
+      "kind": "text",
+      "required": true
+    },
+    {
+      "fieldId": "playlistItemId",
+      "name": "Playlist Item ID",
+      "kind": "text",
+      "required": false
+    },
+    {
+      "fieldId": "youtubeTitle",
+      "name": "YouTube Title",
+      "kind": "text",
+      "required": true
+    },
+    {
+      "fieldId": "youtubePublishedAt",
+      "name": "YouTube Published At",
+      "kind": "date",
+      "required": true
+    },
+    {
+      "fieldId": "displayTitle",
+      "name": "Display Title",
+      "kind": "text",
+      "required": false
+    },
+    {
+      "fieldId": "downloadUrl",
+      "name": "Download URL",
+      "kind": "text",
+      "required": false
+    },
+    {
+      "fieldId": "isPublic",
+      "name": "Is Public",
+      "kind": "boolean",
+      "required": true
+    }
+  ],
+  "customFields": []
+}
