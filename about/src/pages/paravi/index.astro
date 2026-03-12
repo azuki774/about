@@ -11,6 +11,14 @@ function formatPublishedAt(value: string): string {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value : dateFormatter.format(date);
 }
+
+function getYoutubeWatchUrl(videoId: string): string {
+  return `https://www.youtube.com/watch?v=${videoId}`;
+}
+
+function getYoutubeThumbnailUrl(videoId: string): string {
+  return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+}
 ---
 
 <BaseLayout title="azuki.blue - パラパラ動画">
@@ -34,14 +42,44 @@ function formatPublishedAt(value: string): string {
           {videos.map((video) => (
             <article class="video-card">
               <div class="video-frame">
-                <iframe
-                  src={`https://www.youtube-nocookie.com/embed/${video.youtubeVideoId}`}
-                  title={`${getVideoTitle(video)} の埋め込みプレイヤー`}
-                  loading="lazy"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerpolicy="strict-origin-when-cross-origin"
-                  allowfullscreen
-                />
+                <div
+                  class="video-player-shell"
+                  data-video-player
+                  data-video-id={video.youtubeVideoId}
+                  data-video-title={getVideoTitle(video)}
+                >
+                  <div class="video-player">
+                    <div class="video-player-target" id={`youtube-player-${video.id}`}></div>
+                  </div>
+                  <a
+                    class="video-fallback"
+                    href={getYoutubeWatchUrl(video.youtubeVideoId)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    hidden
+                    data-video-fallback
+                  >
+                    <img
+                      src={getYoutubeThumbnailUrl(video.youtubeVideoId)}
+                      alt={`${getVideoTitle(video)} のサムネイル`}
+                      loading="lazy"
+                    />
+                    <span class="video-fallback-copy">
+                      <span class="video-fallback-label">この動画は埋め込み再生できません</span>
+                      <span class="video-fallback-link">YouTube で見る</span>
+                    </span>
+                  </a>
+                </div>
+                <noscript>
+                  <iframe
+                    src={`https://www.youtube-nocookie.com/embed/${video.youtubeVideoId}`}
+                    title={`${getVideoTitle(video)} の埋め込みプレイヤー`}
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen
+                  />
+                </noscript>
               </div>
 
               <div class="video-body">
@@ -52,12 +90,10 @@ function formatPublishedAt(value: string): string {
                 <h2>{getVideoTitle(video)}</h2>
 
                 <div class="actions">
-                  {video.downloadUrl ? (
+                  {video.downloadUrl && (
                     <a class="download-link" href={video.downloadUrl} target="_blank" rel="noopener noreferrer">
                       ダウンロード
                     </a>
-                  ) : (
-                    <span class="download-placeholder">ダウンロードリンク準備中</span>
                   )}
                 </div>
               </div>
@@ -68,6 +104,136 @@ function formatPublishedAt(value: string): string {
     }
   </main>
 </BaseLayout>
+
+<script is:inline>
+  const playerShells = Array.from(document.querySelectorAll("[data-video-player]"));
+  const fallbackTimeoutMs = 4500;
+  const fallbackTimers = new WeakMap();
+
+  function clearFallbackTimer(shell) {
+    const timerId = fallbackTimers.get(shell);
+    if (typeof timerId === "number") {
+      window.clearTimeout(timerId);
+      fallbackTimers.delete(shell);
+    }
+  }
+
+  function showFallback(shell) {
+    if (!(shell instanceof HTMLElement)) {
+      return;
+    }
+
+    clearFallbackTimer(shell);
+    shell.classList.add("is-fallback");
+
+    const player = shell.querySelector(".video-player");
+    const fallback = shell.querySelector("[data-video-fallback]");
+
+    if (player instanceof HTMLElement) {
+      player.hidden = true;
+    }
+
+    if (fallback instanceof HTMLElement) {
+      fallback.hidden = false;
+    }
+  }
+
+  function scheduleFallback(shell) {
+    clearFallbackTimer(shell);
+    const timerId = window.setTimeout(() => showFallback(shell), fallbackTimeoutMs);
+    fallbackTimers.set(shell, timerId);
+  }
+
+  function loadYouTubeIframeApi() {
+    return new Promise((resolve, reject) => {
+      if (window.YT && typeof window.YT.Player === "function") {
+        resolve(window.YT);
+        return;
+      }
+
+      const timeoutId = window.setTimeout(() => reject(new Error("YouTube IFrame API の読み込みがタイムアウトしました。")), 8000);
+      const previousReady = window.onYouTubeIframeAPIReady;
+
+      window.onYouTubeIframeAPIReady = () => {
+        if (typeof previousReady === "function") {
+          previousReady();
+        }
+
+        window.clearTimeout(timeoutId);
+        resolve(window.YT);
+      };
+
+      const existingScript = document.querySelector("script[data-youtube-iframe-api]");
+      if (existingScript) {
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "https://www.youtube.com/iframe_api";
+      script.async = true;
+      script.dataset.youtubeIframeApi = "true";
+      script.onerror = () => {
+        window.clearTimeout(timeoutId);
+        reject(new Error("YouTube IFrame API の読み込みに失敗しました。"));
+      };
+      document.head.append(script);
+    });
+  }
+
+  if (playerShells.length > 0) {
+    loadYouTubeIframeApi()
+      .then((YT) => {
+        playerShells.forEach((shell) => {
+          if (!(shell instanceof HTMLElement)) {
+            return;
+          }
+
+          const target = shell.querySelector(".video-player");
+          const playerTarget = shell.querySelector(".video-player-target");
+          const videoId = shell.dataset.videoId;
+          const videoTitle = shell.dataset.videoTitle ?? "";
+
+          if (!(target instanceof HTMLElement) || !(playerTarget instanceof HTMLElement) || !videoId || !playerTarget.id) {
+            showFallback(shell);
+            return;
+          }
+
+          scheduleFallback(shell);
+
+          new YT.Player(playerTarget.id, {
+            host: "https://www.youtube-nocookie.com",
+            videoId,
+            playerVars: {
+              origin: window.location.origin,
+              playsinline: 1,
+              rel: 0,
+            },
+            events: {
+              onReady(event) {
+                clearFallbackTimer(shell);
+
+                const iframe = event.target?.getIframe?.();
+                if (iframe instanceof HTMLIFrameElement && videoTitle) {
+                  iframe.title = `${videoTitle} の埋め込みプレイヤー`;
+                }
+              },
+              onError() {
+                showFallback(shell);
+              },
+              onStateChange(event) {
+                if (event.data !== YT.PlayerState.UNSTARTED) {
+                  clearFallbackTimer(shell);
+                }
+              },
+            },
+          });
+        });
+      })
+      .catch(() => {
+        playerShells.forEach((shell) => showFallback(shell));
+      });
+  }
+</script>
 
 <style>
   .paravi-main {
@@ -147,12 +313,104 @@ function formatPublishedAt(value: string): string {
       #fff;
   }
 
+  .video-player-shell,
+  .video-player,
+  .video-fallback {
+    position: absolute;
+    inset: 0;
+  }
+
+  .video-player-target {
+    width: 100%;
+    height: 100%;
+  }
+
+  .video-player-shell.is-fallback {
+    background: #12030a;
+  }
+
   .video-frame iframe {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     border: 0;
+  }
+
+  .video-player :global(iframe) {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .video-player[hidden],
+  .video-fallback[hidden] {
+    display: none;
+  }
+
+  .video-fallback {
+    display: flex;
+    align-items: end;
+    padding: 1rem;
+    color: #fff;
+    text-decoration: none;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .video-fallback::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(18, 3, 10, 0.1), rgba(18, 3, 10, 0.82)),
+      rgba(76, 5, 25, 0.18);
+    z-index: 0;
+  }
+
+  .video-fallback img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+  }
+
+  .video-fallback-copy {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 0.45rem;
+    width: 100%;
+  }
+
+  .video-fallback-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  .video-fallback-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    min-height: 2rem;
+    padding: 0.25rem 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(8px);
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .video-fallback:hover .video-fallback-link {
+    background: rgba(255, 255, 255, 0.22);
   }
 
   .video-body {
@@ -186,8 +444,7 @@ function formatPublishedAt(value: string): string {
     gap: 0.75rem;
   }
 
-  .download-link,
-  .download-placeholder {
+  .download-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -207,12 +464,6 @@ function formatPublishedAt(value: string): string {
 
   .download-link:hover {
     background: rgba(236, 72, 153, 0.09);
-  }
-
-  .download-placeholder {
-    border: 1px dashed var(--border-color);
-    color: var(--text-secondary);
-    background-color: rgba(236, 72, 153, 0.03);
   }
 
   @media (max-width: 720px) {
