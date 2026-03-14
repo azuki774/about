@@ -58,7 +58,6 @@ function normalizeVideoRecord(value: unknown): MicroCmsVideoRecord {
   return {
     id,
     youtubeVideoId,
-    playlistItemId: toOptionalString(record.playlistItemId),
     youtubeTitle,
     youtubePublishedAt,
     displayTitle: toOptionalString(record.displayTitle),

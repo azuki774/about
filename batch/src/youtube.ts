@@ -95,23 +95,21 @@ function collectPlaylistVideoItems(value: unknown, items: PlaylistVideoItem[] = 
   return items;
 }
 
-function parsePlaylistItem(value: PlaylistVideoItem, playlistId: string): Omit<SyncVideoRecord, "youtubePublishedAt"> | undefined {
+function parsePlaylistItem(value: PlaylistVideoItem): Omit<SyncVideoRecord, "youtubePublishedAt"> | undefined {
   if (value.isPlayable === false) {
     return undefined;
   }
 
   return {
-    playlistItemId: `${playlistId}:${value.videoId}`,
     youtubeVideoId: toRequiredString(value.videoId) ?? "",
     youtubeTitle: extractText(value.title) ?? "",
   };
 }
 
 function normalizePlaylistItem(
-  value: PlaylistVideoItem,
-  playlistId: string
+  value: PlaylistVideoItem
 ): Omit<SyncVideoRecord, "youtubePublishedAt"> | undefined {
-  const parsed = parsePlaylistItem(value, playlistId);
+  const parsed = parsePlaylistItem(value);
   if (!parsed) {
     return undefined;
   }
@@ -225,7 +223,7 @@ export async function fetchPlaylistVideos(
   const initialData = extractInitialData(html);
   const scrapedItems = collectPlaylistVideoItems(initialData);
   const normalizedItems = scrapedItems
-    .map((item) => normalizePlaylistItem(item, playlistId))
+    .map((item) => normalizePlaylistItem(item))
     .filter((item): item is Omit<SyncVideoRecord, "youtubePublishedAt"> => Boolean(item));
 
   const videos: Omit<SyncVideoRecord, "youtubePublishedAt">[] = [];

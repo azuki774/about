@@ -1,6 +1,5 @@
 export interface SyncVideoRecord {
   youtubeVideoId: string;
-  playlistItemId: string;
   youtubeTitle: string;
   youtubePublishedAt: string;
 }
@@ -8,7 +7,6 @@ export interface SyncVideoRecord {
 export interface MicroCmsVideoRecord {
   id: string;
   youtubeVideoId: string;
-  playlistItemId?: string;
   youtubeTitle: string;
   youtubePublishedAt: string;
   displayTitle?: string;

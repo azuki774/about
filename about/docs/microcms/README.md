@@ -27,7 +27,6 @@
 
 - YouTube同期で更新する項目:
   - `youtubeVideoId`
-  - `playlistItemId`
   - `youtubeTitle`
   - `youtubePublishedAt`
 - 手編集する項目:

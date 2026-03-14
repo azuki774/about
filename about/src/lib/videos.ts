@@ -1,7 +1,6 @@
 export interface VideoRecord {
   id: string;
   youtubeVideoId: string;
-  playlistItemId?: string;
   youtubeTitle: string;
   youtubePublishedAt: string;
   displayTitle?: string;
@@ -55,7 +54,6 @@ function normalizeVideoRecord(value: unknown): VideoRecord {
   return {
     id,
     youtubeVideoId,
-    playlistItemId: toOptionalString(record.playlistItemId),
     youtubeTitle,
     youtubePublishedAt,
     displayTitle: toOptionalString(record.displayTitle),

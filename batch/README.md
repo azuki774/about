@@ -34,7 +34,7 @@ https://www.youtube.com/playlist?list=PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ## 同期ルール
 
 - 照合キーは `youtubeVideoId`
-- 更新対象は `youtubeVideoId`, `playlistItemId`, `youtubeTitle`, `youtubePublishedAt`
+- 更新対象は `youtubeVideoId`, `youtubeTitle`, `youtubePublishedAt`
 - `displayTitle`, `downloadUrl` は更新しない
 - 既存にない動画は `isPublic=true` で新規作成する
 - `microCMS` にだけ存在する動画は削除せず、差分ログだけ出す
@@ -43,6 +43,5 @@ https://www.youtube.com/playlist?list=PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 - `YOUTUBE_PLAYLIST_ID` は公開プレイリストを指定してください
 - 取得対象はプレイリストの最新 100 件までです
-- `playlistItemId` は `PLAYLIST_ID:VIDEO_ID` 形式の擬似 ID を使います
 - `youtubePublishedAt` は watch page の `uploadDate` または `publishDate` を使います
 - watch page で日付しか取得できない場合、時刻は `00:00:00.000Z` になります

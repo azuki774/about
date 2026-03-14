@@ -91,13 +91,11 @@ test("fetchPlaylistVideos scrapes playlist HTML, deduplicates, and skips videos 
 
   expect(result).toEqual([
     {
-      playlistItemId: "playlist-id:video-001",
       youtubeVideoId: "video-001",
       youtubeTitle: "First Video",
       youtubePublishedAt: "2025-01-15T19:34:56.000Z",
     },
     {
-      playlistItemId: "playlist-id:video-002",
       youtubeVideoId: "video-002",
       youtubeTitle: "Second Video",
       youtubePublishedAt: "2025-02-01T00:00:00.000Z",
