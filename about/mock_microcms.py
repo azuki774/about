@@ -14,7 +14,6 @@ VIDEOS: list[dict[str, Any]] = [
     {
         "id": "parapara-001",
         "youtubeVideoId": "f_3R7H7VA48",
-        "playlistItemId": "playlist-item-001",
         "youtubeTitle": "[para] BOOM BOOM SEXY LADY / JOE BANANA",
         "youtubePublishedAt": "2025-01-15T12:00:00.000Z",
         "displayTitle": "BOOM BOOM SEXY LADY / JOE BANANA",
@@ -24,7 +23,6 @@ VIDEOS: list[dict[str, Any]] = [
     {
         "id": "parapara-002",
         "youtubeVideoId": "o9qo7c1dGrU",
-        "playlistItemId": "playlist-item-002",
         "youtubeTitle": "[para] EXTRA LOVER / DANELA",
         "youtubePublishedAt": "2025-02-01T12:00:00.000Z",
         "displayTitle": "",
@@ -34,7 +32,6 @@ VIDEOS: list[dict[str, Any]] = [
     {
         "id": "parapara-003",
         "youtubeVideoId": "2qFb3CBrg1A",
-        "playlistItemId": "playlist-item-003",
         "youtubeTitle": "[para] LADY QUARK / SHARON K",
         "youtubePublishedAt": "2024-12-20T12:00:00.000Z",
         "displayTitle": "LADY QUARK / SHARON K",
@@ -44,7 +41,6 @@ VIDEOS: list[dict[str, Any]] = [
     {
         "id": "parapara-004",
         "youtubeVideoId": "RgKAFK5djSk",
-        "playlistItemId": "playlist-item-004",
         "youtubeTitle": "Hidden Draft Movie",
         "youtubePublishedAt": "2025-03-01T12:00:00.000Z",
         "displayTitle": "Hidden Draft Movie",

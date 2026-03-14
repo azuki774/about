@@ -17,13 +17,6 @@
       "notes": "埋め込みURLに利用する動画ID。例: dQw4w9WgXcQ"
     },
     {
-      "fieldId": "playlistItemId",
-      "label": "Playlist Item ID",
-      "type": "text",
-      "required": false,
-      "notes": "YouTubeプレイリスト同期時の対応付け用。"
-    },
-    {
       "fieldId": "youtubeTitle",
       "label": "YouTube Title",
       "type": "text",

@@ -7,12 +7,6 @@
       "required": true
     },
     {
-      "fieldId": "playlistItemId",
-      "name": "Playlist Item ID",
-      "kind": "text",
-      "required": false
-    },
-    {
       "fieldId": "youtubeTitle",
       "name": "YouTube Title",
       "kind": "text",

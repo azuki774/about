@@ -18,7 +18,6 @@ export interface SyncSummary {
 
 function hasChanged(existing: MicroCmsVideoRecord, incoming: SyncVideoRecord): boolean {
   return (
-    existing.playlistItemId !== incoming.playlistItemId ||
     existing.youtubeTitle !== incoming.youtubeTitle ||
     existing.youtubePublishedAt !== incoming.youtubePublishedAt
   );

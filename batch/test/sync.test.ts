@@ -6,19 +6,16 @@ import type { MicroCmsVideoRecord, SyncVideoRecord } from "../src/types";
 test("buildSyncPlan creates and updates only changed records", () => {
   const youtubeVideos: SyncVideoRecord[] = [
     {
-      playlistItemId: "playlist-item-001",
       youtubeVideoId: "video-001",
       youtubeTitle: "First Video",
       youtubePublishedAt: "2025-01-15T12:00:00.000Z",
     },
     {
-      playlistItemId: "playlist-item-002-new",
       youtubeVideoId: "video-002",
       youtubeTitle: "Second Video Updated",
       youtubePublishedAt: "2025-02-01T12:00:00.000Z",
     },
     {
-      playlistItemId: "playlist-item-003",
       youtubeVideoId: "video-003",
       youtubeTitle: "Third Video",
       youtubePublishedAt: "2025-03-01T12:00:00.000Z",
@@ -28,7 +25,6 @@ test("buildSyncPlan creates and updates only changed records", () => {
   const existingVideos: MicroCmsVideoRecord[] = [
     {
       id: "record-001",
-      playlistItemId: "playlist-item-001",
       youtubeVideoId: "video-001",
       youtubeTitle: "First Video",
       youtubePublishedAt: "2025-01-15T12:00:00.000Z",
@@ -38,7 +34,6 @@ test("buildSyncPlan creates and updates only changed records", () => {
     },
     {
       id: "record-002",
-      playlistItemId: "playlist-item-002",
       youtubeVideoId: "video-002",
       youtubeTitle: "Second Video",
       youtubePublishedAt: "2025-02-01T12:00:00.000Z",
@@ -47,7 +42,6 @@ test("buildSyncPlan creates and updates only changed records", () => {
     },
     {
       id: "record-999",
-      playlistItemId: "playlist-item-999",
       youtubeVideoId: "video-999",
       youtubeTitle: "Old Video",
       youtubePublishedAt: "2024-12-31T12:00:00.000Z",
@@ -72,7 +66,6 @@ test("buildSyncPlan fails when microCMS has duplicated youtubeVideoId", () => {
   const existingVideos: MicroCmsVideoRecord[] = [
     {
       id: "record-001",
-      playlistItemId: "playlist-item-001",
       youtubeVideoId: "video-001",
       youtubeTitle: "First Video",
       youtubePublishedAt: "2025-01-15T12:00:00.000Z",
@@ -80,7 +73,6 @@ test("buildSyncPlan fails when microCMS has duplicated youtubeVideoId", () => {
     },
     {
       id: "record-002",
-      playlistItemId: "playlist-item-002",
       youtubeVideoId: "video-001",
       youtubeTitle: "Duplicated Video",
       youtubePublishedAt: "2025-01-16T12:00:00.000Z",
@@ -102,7 +94,6 @@ test("applySyncPlan sends creates and updates while only logging missing records
   const plan = {
     toCreate: [
       {
-        playlistItemId: "playlist-item-003",
         youtubeVideoId: "video-003",
         youtubeTitle: "Third Video",
         youtubePublishedAt: "2025-03-01T12:00:00.000Z",
@@ -112,7 +103,6 @@ test("applySyncPlan sends creates and updates while only logging missing records
       {
         id: "record-002",
         payload: {
-          playlistItemId: "playlist-item-002-new",
           youtubeVideoId: "video-002",
           youtubeTitle: "Second Video Updated",
           youtubePublishedAt: "2025-02-01T12:00:00.000Z",
@@ -122,7 +112,6 @@ test("applySyncPlan sends creates and updates while only logging missing records
     missingFromPlaylist: [
       {
         id: "record-999",
-        playlistItemId: "playlist-item-999",
         youtubeVideoId: "video-999",
         youtubeTitle: "Old Video",
         youtubePublishedAt: "2024-12-31T12:00:00.000Z",
