@@ -2,93 +2,105 @@ import { expect, test } from "bun:test";
 
 import { fetchPlaylistVideos } from "../src/youtube";
 
-test("fetchPlaylistVideos paginates, deduplicates, and skips invalid items", async () => {
+test("fetchPlaylistVideos scrapes playlist HTML, deduplicates, and skips videos without uploadDate", async () => {
   const warnings: string[] = [];
-  const responses = [
-    {
-      items: [
-        {
-          id: "playlist-item-001",
-          snippet: {
-            title: "First Video",
-            resourceId: {
+  const playlistHtml = `<!DOCTYPE html><html><body><script>var ytInitialData = ${JSON.stringify({
+    contents: {
+      playlistVideoListRenderer: {
+        contents: [
+          {
+            playlistVideoRenderer: {
               videoId: "video-001",
+              title: {
+                runs: [{ text: "First Video" }],
+              },
             },
           },
-          contentDetails: {
-            videoPublishedAt: "2025-01-15T12:00:00.000Z",
-          },
-        },
-        {
-          id: "playlist-item-duplicate",
-          snippet: {
-            title: "Duplicate Video",
-            resourceId: {
+          {
+            playlistVideoRenderer: {
               videoId: "video-001",
+              title: {
+                runs: [{ text: "Duplicate Video" }],
+              },
             },
           },
-          contentDetails: {
-            videoPublishedAt: "2025-01-16T12:00:00.000Z",
-          },
-        },
-        {
-          id: "playlist-item-invalid",
-          snippet: {
-            title: "Invalid Video",
-            resourceId: {
-              videoId: "video-999",
-            },
-          },
-          contentDetails: {},
-        },
-      ],
-      nextPageToken: "NEXT",
-    },
-    {
-      items: [
-        {
-          id: "playlist-item-002",
-          snippet: {
-            title: "Second Video",
-            resourceId: {
+          {
+            playlistVideoRenderer: {
               videoId: "video-002",
+              title: {
+                simpleText: "Second Video",
+              },
             },
           },
-          contentDetails: {
-            videoPublishedAt: "2025-02-01T12:00:00.000Z",
+          {
+            playlistVideoRenderer: {
+              videoId: "video-003",
+              title: {
+                runs: [{ text: "Missing Upload Date" }],
+              },
+            },
           },
-        },
-      ],
-    },
-  ];
-
-  let callCount = 0;
-  const fetchFn: typeof fetch = async () =>
-    new Response(JSON.stringify(responses[callCount++]), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
+          {
+            playlistVideoRenderer: {
+              title: {
+                runs: [{ text: "Invalid Video" }],
+              },
+            },
+          },
+        ],
       },
-    });
+    },
+  })};</script></body></html>`;
 
-  const result = await fetchPlaylistVideos(fetchFn, "api-key", "playlist-id", {
+  const videoPages = new Map<string, string>([
+    ["video-001", '<meta itemprop="uploadDate" content="2025-01-15T12:34:56-07:00">'],
+    ["video-002", '<script type="application/ld+json">{"publishDate":"2025-02-01"}</script>'],
+    ["video-003", "<html></html>"],
+  ]);
+
+  const fetchFn: typeof fetch = async (input) => {
+    const url = new URL(typeof input === "string" ? input : input.url);
+
+    if (url.pathname === "/playlist") {
+      return new Response(playlistHtml, {
+        status: 200,
+        headers: {
+          "Content-Type": "text/html",
+        },
+      });
+    }
+
+    if (url.pathname === "/watch") {
+      const videoId = url.searchParams.get("v") ?? "";
+      const body = videoPages.get(videoId);
+      return new Response(body ?? "", {
+        status: body ? 200 : 404,
+        headers: {
+          "Content-Type": "text/html",
+        },
+      });
+    }
+
+    return new Response("not found", { status: 404 });
+  };
+
+  const result = await fetchPlaylistVideos(fetchFn, "playlist-id", {
     log: () => {},
     warn: (message) => warnings.push(String(message)),
   });
 
-  expect(callCount).toBe(2);
   expect(result).toEqual([
     {
-      playlistItemId: "playlist-item-001",
+      playlistItemId: "playlist-id:video-001",
       youtubeVideoId: "video-001",
       youtubeTitle: "First Video",
-      youtubePublishedAt: "2025-01-15T12:00:00.000Z",
+      youtubePublishedAt: "2025-01-15T19:34:56.000Z",
     },
     {
-      playlistItemId: "playlist-item-002",
+      playlistItemId: "playlist-id:video-002",
       youtubeVideoId: "video-002",
       youtubeTitle: "Second Video",
-      youtubePublishedAt: "2025-02-01T12:00:00.000Z",
+      youtubePublishedAt: "2025-02-01T00:00:00.000Z",
     },
   ]);
   expect(warnings).toHaveLength(2);
