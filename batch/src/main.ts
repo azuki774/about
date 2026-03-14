@@ -8,7 +8,7 @@ async function main(): Promise<void> {
   console.log("Starting YouTube to microCMS sync.");
 
   const [youtubeVideos, microCmsVideos] = await Promise.all([
-    fetchPlaylistVideos(fetch, env.youtubeApiKey, env.youtubePlaylistId),
+    fetchPlaylistVideos(fetch, env.youtubePlaylistId),
     fetchAllVideos(fetch, {
       baseUrl: env.microCmsBaseUrl,
       apiKey: env.microCmsApiKey,

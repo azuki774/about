@@ -1,5 +1,4 @@
 export interface SyncEnvironment {
-  youtubeApiKey: string;
   youtubePlaylistId: string;
   microCmsBaseUrl: string;
   microCmsApiKey: string;
@@ -16,7 +15,6 @@ function requireEnv(name: string): string {
 
 export function readEnvironment(): SyncEnvironment {
   return {
-    youtubeApiKey: requireEnv("YOUTUBE_API_KEY"),
     youtubePlaylistId: requireEnv("YOUTUBE_PLAYLIST_ID"),
     microCmsBaseUrl: requireEnv("MICROCMS_BASE_URL").replace(/\/+$/, ""),
     microCmsApiKey: requireEnv("MICROCMS_API_KEY"),
