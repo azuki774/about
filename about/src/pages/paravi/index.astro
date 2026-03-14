@@ -1,0 +1,480 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { fetchPublicVideos, getVideoTitle } from "../../lib/videos";
+
+const videos = await fetchPublicVideos();
+const dateFormatter = new Intl.DateTimeFormat("ja-JP", {
+  dateStyle: "long",
+});
+
+function formatPublishedAt(value: string): string {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value : dateFormatter.format(date);
+}
+
+function getYoutubeWatchUrl(videoId: string): string {
+  return `https://www.youtube.com/watch?v=${videoId}`;
+}
+
+function getYoutubeThumbnailUrl(videoId: string): string {
+  return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+}
+---
+
+<BaseLayout title="azuki.blue - パラパラ動画">
+  <main class="paravi-main">
+    <section class="paravi-hero">
+      <p class="eyebrow">ParaPara Archive</p>
+      <h1>パラパラ動画</h1>
+      <p class="lead">
+        Youtube で公開しているリンクをまとめています。細かいフリの違いはご容赦ください。
+      </p>
+    </section>
+
+    {
+      videos.length === 0 ? (
+        <section class="empty-state">
+          <h2>公開中の動画がありません</h2>
+        </section>
+      ) : (
+        <section class="video-grid" aria-label="パラパラ動画一覧">
+          {videos.map((video) => (
+            <article class="video-card">
+              <div class="video-frame">
+                <div
+                  class="video-player-shell"
+                  data-video-player
+                  data-video-id={video.youtubeVideoId}
+                  data-video-title={getVideoTitle(video)}
+                >
+                  <div class="video-player">
+                    <div class="video-player-target" id={`youtube-player-${video.id}`}></div>
+                  </div>
+                  <a
+                    class="video-fallback"
+                    href={getYoutubeWatchUrl(video.youtubeVideoId)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    hidden
+                    data-video-fallback
+                  >
+                    <img
+                      src={getYoutubeThumbnailUrl(video.youtubeVideoId)}
+                      alt={`${getVideoTitle(video)} のサムネイル`}
+                      loading="lazy"
+                    />
+                    <span class="video-fallback-copy">
+                      <span class="video-fallback-label">この動画は埋め込み再生できません</span>
+                      <span class="video-fallback-link">YouTube で見る</span>
+                    </span>
+                  </a>
+                </div>
+                <noscript>
+                  <iframe
+                    src={`https://www.youtube-nocookie.com/embed/${video.youtubeVideoId}`}
+                    title={`${getVideoTitle(video)} の埋め込みプレイヤー`}
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen
+                  />
+                </noscript>
+              </div>
+
+              <div class="video-body">
+                <div class="video-meta">
+                  <p class="video-date">公開日: {formatPublishedAt(video.youtubePublishedAt)}</p>
+                </div>
+
+                <h2>{getVideoTitle(video)}</h2>
+
+                <div class="actions">
+                  {video.downloadUrl && (
+                    <a class="download-link" href={video.downloadUrl} target="_blank" rel="noopener noreferrer">
+                      ダウンロード
+                    </a>
+                  )}
+                </div>
+              </div>
+            </article>
+          ))}
+        </section>
+      )
+    }
+  </main>
+</BaseLayout>
+
+<script is:inline>
+  const playerShells = Array.from(document.querySelectorAll("[data-video-player]"));
+  const fallbackTimeoutMs = 4500;
+  const fallbackTimers = new WeakMap();
+
+  function clearFallbackTimer(shell) {
+    const timerId = fallbackTimers.get(shell);
+    if (typeof timerId === "number") {
+      window.clearTimeout(timerId);
+      fallbackTimers.delete(shell);
+    }
+  }
+
+  function showFallback(shell) {
+    if (!(shell instanceof HTMLElement)) {
+      return;
+    }
+
+    clearFallbackTimer(shell);
+    shell.classList.add("is-fallback");
+
+    const player = shell.querySelector(".video-player");
+    const fallback = shell.querySelector("[data-video-fallback]");
+
+    if (player instanceof HTMLElement) {
+      player.hidden = true;
+    }
+
+    if (fallback instanceof HTMLElement) {
+      fallback.hidden = false;
+    }
+  }
+
+  function scheduleFallback(shell) {
+    clearFallbackTimer(shell);
+    const timerId = window.setTimeout(() => showFallback(shell), fallbackTimeoutMs);
+    fallbackTimers.set(shell, timerId);
+  }
+
+  function loadYouTubeIframeApi() {
+    return new Promise((resolve, reject) => {
+      if (window.YT && typeof window.YT.Player === "function") {
+        resolve(window.YT);
+        return;
+      }
+
+      const timeoutId = window.setTimeout(() => reject(new Error("YouTube IFrame API の読み込みがタイムアウトしました。")), 8000);
+      const previousReady = window.onYouTubeIframeAPIReady;
+
+      window.onYouTubeIframeAPIReady = () => {
+        if (typeof previousReady === "function") {
+          previousReady();
+        }
+
+        window.clearTimeout(timeoutId);
+        resolve(window.YT);
+      };
+
+      const existingScript = document.querySelector("script[data-youtube-iframe-api]");
+      if (existingScript) {
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "https://www.youtube.com/iframe_api";
+      script.async = true;
+      script.dataset.youtubeIframeApi = "true";
+      script.onerror = () => {
+        window.clearTimeout(timeoutId);
+        reject(new Error("YouTube IFrame API の読み込みに失敗しました。"));
+      };
+      document.head.append(script);
+    });
+  }
+
+  if (playerShells.length > 0) {
+    loadYouTubeIframeApi()
+      .then((YT) => {
+        playerShells.forEach((shell) => {
+          if (!(shell instanceof HTMLElement)) {
+            return;
+          }
+
+          const target = shell.querySelector(".video-player");
+          const playerTarget = shell.querySelector(".video-player-target");
+          const videoId = shell.dataset.videoId;
+          const videoTitle = shell.dataset.videoTitle ?? "";
+
+          if (!(target instanceof HTMLElement) || !(playerTarget instanceof HTMLElement) || !videoId || !playerTarget.id) {
+            showFallback(shell);
+            return;
+          }
+
+          scheduleFallback(shell);
+
+          new YT.Player(playerTarget.id, {
+            host: "https://www.youtube-nocookie.com",
+            videoId,
+            playerVars: {
+              origin: window.location.origin,
+              playsinline: 1,
+              rel: 0,
+            },
+            events: {
+              onReady(event) {
+                clearFallbackTimer(shell);
+
+                const iframe = event.target?.getIframe?.();
+                if (iframe instanceof HTMLIFrameElement && videoTitle) {
+                  iframe.title = `${videoTitle} の埋め込みプレイヤー`;
+                }
+              },
+              onError() {
+                showFallback(shell);
+              },
+              onStateChange(event) {
+                if (event.data !== YT.PlayerState.UNSTARTED) {
+                  clearFallbackTimer(shell);
+                }
+              },
+            },
+          });
+        });
+      })
+      .catch(() => {
+        playerShells.forEach((shell) => showFallback(shell));
+      });
+  }
+</script>
+
+<style>
+  .paravi-main {
+    width: min(1120px, calc(100vw - 2rem));
+    margin: 0 auto;
+    padding: 2rem 0 3rem;
+  }
+
+  .paravi-hero {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    background:
+      radial-gradient(circle at top right, rgba(103, 232, 249, 0.4), transparent 35%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(236, 72, 153, 0.08));
+    box-shadow: 0 18px 40px rgba(76, 5, 25, 0.08);
+  }
+
+  .eyebrow {
+    margin: 0 0 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-pink);
+  }
+
+  .paravi-hero h1 {
+    margin: 0 0 0.75rem;
+    font-size: clamp(2rem, 3vw, 2.8rem);
+    line-height: 1.1;
+  }
+
+  .lead {
+    margin: 0;
+    max-width: 48rem;
+    color: var(--text-secondary);
+  }
+
+  .empty-state {
+    padding: 2rem;
+    border: 1px dashed var(--border-color);
+    border-radius: 16px;
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+
+  .empty-state h2,
+  .empty-state p {
+    margin: 0;
+  }
+
+  .empty-state p {
+    margin-top: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .video-card {
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    background-color: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 16px 36px rgba(131, 24, 67, 0.12);
+  }
+
+  .video-frame {
+    position: relative;
+    padding-top: 56.25%;
+    background:
+      linear-gradient(135deg, rgba(103, 232, 249, 0.16), rgba(236, 72, 153, 0.16)),
+      #fff;
+  }
+
+  .video-player-shell,
+  .video-player,
+  .video-fallback {
+    position: absolute;
+    inset: 0;
+  }
+
+  .video-player-target {
+    width: 100%;
+    height: 100%;
+  }
+
+  .video-player-shell.is-fallback {
+    background: #12030a;
+  }
+
+  .video-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .video-player :global(iframe) {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .video-player[hidden],
+  .video-fallback[hidden] {
+    display: none;
+  }
+
+  .video-fallback {
+    display: flex;
+    align-items: end;
+    padding: 1rem;
+    color: #fff;
+    text-decoration: none;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .video-fallback::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(18, 3, 10, 0.1), rgba(18, 3, 10, 0.82)),
+      rgba(76, 5, 25, 0.18);
+    z-index: 0;
+  }
+
+  .video-fallback img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+  }
+
+  .video-fallback-copy {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 0.45rem;
+    width: 100%;
+  }
+
+  .video-fallback-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  .video-fallback-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    min-height: 2rem;
+    padding: 0.25rem 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(8px);
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .video-fallback:hover .video-fallback-link {
+    background: rgba(255, 255, 255, 0.22);
+  }
+
+  .video-body {
+    display: grid;
+    gap: 0.8rem;
+    padding: 1rem 1rem 1.2rem;
+  }
+
+  .video-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .video-date {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+  }
+
+  .video-body h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .download-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 1.7rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .download-link {
+    background: rgba(236, 72, 153, 0.05);
+    color: var(--accent);
+    border: 1px solid rgba(236, 72, 153, 0.12);
+    text-decoration: none;
+  }
+
+  .download-link:hover {
+    background: rgba(236, 72, 153, 0.09);
+  }
+
+  @media (max-width: 720px) {
+    .paravi-main {
+      width: min(100vw - 1rem, 42rem);
+      padding-top: 1rem;
+    }
+
+    .paravi-hero,
+    .video-body {
+      padding-left: 0.9rem;
+      padding-right: 0.9rem;
+    }
+  }
+</style>

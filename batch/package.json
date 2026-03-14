@@ -1,0 +1,9 @@
+{
+  "name": "about-paravi-sync",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun run ./src/main.ts",
+    "test": "bun test"
+  }
+}
