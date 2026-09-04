@@ -90,6 +90,12 @@ import Section from "../components/Section.astro";
       <p class="note">2025年12月7日ごろから運用開始</p>
     </Section>
 
+    <section id="photos" class="photos-section">
+      <h2>フォト</h2>
+      <p>VRChatを中心としたフォトを公開しています</p>
+      <p><a href="/photos/">フォトページへ</a></p>
+    </section>
+
     <section id="parapara" class="parapara-section">
       <h2>パラパラ動画</h2>
       <p>別ページで公開しています。</p>
@@ -250,6 +256,26 @@ import Section from "../components/Section.astro";
     color: var(--text-secondary);
     font-size: 0.85rem;
     opacity: 0.8;
+  }
+  .photos-section {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .photos-section h2 {
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+    color: var(--accent);
+  }
+  .photos-section p {
+    margin: 0 0 0.5rem;
+  }
+  .photos-section a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .photos-section a:hover {
+    color: var(--color-pink);
+    text-decoration: underline;
   }
   .parapara-section {
     padding: 1.5rem 0;

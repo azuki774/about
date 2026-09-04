@@ -38,6 +38,19 @@ export MICROCMS_BASE_URL="https://YOUR_SERVICE.microcms.io"
 export MICROCMS_API_KEY="YOUR_API_KEY"
 ```
 
+### フォトページのファイル配置
+
+`/photos/` では、R2 バケットに次の構造で画像を配置します。
+
+```text
+2026/
+  09/
+    photo-1.jpg
+    photo-2.webp
+```
+
+年は 4 桁、月は `01`〜`12` の 2 桁にします。ファイル名は任意で、`png`、`jpg`、`jpeg`、`webp` に対応しています。
+
 ## ビルド（SSR）
 
 サーバー出力をビルドするには:

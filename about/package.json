@@ -6,13 +6,16 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "mock:cms": "python3 mock_microcms.py"
+    "mock:cms": "python3 mock_microcms.py",
+    "test": "bun test"
   },
   "dependencies": {
     "@astrojs/node": "^9.5.4",
+    "@aws-sdk/client-s3": "^3.1124.0",
     "astro": "^5.0.0"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "@types/bun": "latest"
   },
   "peerDependencies": {
