@@ -1,0 +1,253 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  fetchPhotoListing,
+  getDisplayPhotoUrl,
+  getOriginalPhotoUrl,
+  getPhotosPublicBaseUrl,
+} from "../../lib/photos";
+
+const dev = import.meta.env.DEV;
+const publicBaseUrl = getPhotosPublicBaseUrl();
+const listing = await fetchPhotoListing();
+const groups = listing?.groups ?? [];
+---
+
+<BaseLayout title="azuki.blue - フォト">
+  <main class="photos-main">
+    <section class="photos-hero">
+      <p class="eyebrow">Photos</p>
+      <h1>フォト</h1>
+      <p class="lead">VRChatを中心としたフォトを公開しています</p>
+    </section>
+
+    {
+      groups.length === 0 ? (
+        <section class="empty-state">
+          <h2>公開中のフォトがありません</h2>
+        </section>
+      ) : (
+        groups.map((group) => (
+          <section class="photo-month">
+            <h2>{group.year}年{group.month}月</h2>
+            <div class="photo-grid">
+              {group.photos.map((photo) => (
+                <button
+                  type="button"
+                  class="photo-card"
+                  data-photo-trigger
+                  data-photo-large={getDisplayPhotoUrl(publicBaseUrl, photo.key, 1920, dev)}
+                  data-photo-original={getOriginalPhotoUrl(publicBaseUrl, photo.key)}
+                  data-photo-alt={photo.basename}
+                >
+                  <img
+                    src={getDisplayPhotoUrl(publicBaseUrl, photo.key, 640, dev)}
+                    srcset={`${getDisplayPhotoUrl(publicBaseUrl, photo.key, 480, dev)} 480w, ${getDisplayPhotoUrl(publicBaseUrl, photo.key, 960, dev)} 960w`}
+                    sizes="(max-width: 720px) 92vw, 560px"
+                    alt={photo.basename}
+                    loading="lazy"
+                    decoding="async"
+                    onerror="this.classList.add('is-broken')"
+                  />
+                </button>
+              ))}
+            </div>
+          </section>
+        ))
+      )
+    }
+  </main>
+
+  <dialog id="photo-dialog" class="photo-dialog">
+    <img id="photo-dialog-image" alt="" />
+    <div class="photo-dialog-actions">
+      <a id="photo-dialog-original" href="#" target="_blank" rel="noopener noreferrer">オリジナルのサイズで表示</a>
+      <button type="button" id="photo-dialog-close">閉じる</button>
+    </div>
+  </dialog>
+</BaseLayout>
+
+<script is:inline>
+  const dialog = document.getElementById("photo-dialog");
+  const dialogImage = document.getElementById("photo-dialog-image");
+  const dialogOriginal = document.getElementById("photo-dialog-original");
+  const dialogClose = document.getElementById("photo-dialog-close");
+  const triggers = Array.from(document.querySelectorAll("[data-photo-trigger]"));
+
+  if (
+    dialog instanceof HTMLDialogElement &&
+    dialogImage instanceof HTMLImageElement &&
+    dialogOriginal instanceof HTMLAnchorElement &&
+    dialogClose instanceof HTMLButtonElement
+  ) {
+    triggers.forEach((trigger) => {
+      trigger.addEventListener("click", () => {
+        if (!(trigger instanceof HTMLElement)) {
+          return;
+        }
+        dialogImage.src = trigger.dataset.photoLarge ?? "";
+        dialogImage.alt = trigger.dataset.photoAlt ?? "";
+        dialogOriginal.href = trigger.dataset.photoOriginal ?? "#";
+        dialog.showModal();
+      });
+    });
+
+    dialogClose.addEventListener("click", () => dialog.close());
+
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) {
+        dialog.close();
+      }
+    });
+
+    dialog.addEventListener("close", () => {
+      dialogImage.src = "";
+    });
+  }
+</script>
+
+<style>
+  .photos-main {
+    width: min(1120px, calc(100vw - 2rem));
+    margin: 0 auto;
+    padding: 2rem 0 3rem;
+  }
+
+  .photos-hero {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    background:
+      radial-gradient(circle at top right, rgba(103, 232, 249, 0.4), transparent 35%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(236, 72, 153, 0.08));
+    box-shadow: 0 18px 40px rgba(76, 5, 25, 0.08);
+  }
+
+  .eyebrow {
+    margin: 0 0 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-pink);
+  }
+
+  .photos-hero h1 {
+    margin: 0 0 0.5rem;
+    font-size: clamp(2rem, 3vw, 2.8rem);
+    line-height: 1.1;
+  }
+
+  .lead {
+    margin: 0;
+    color: var(--text-secondary);
+  }
+
+  .empty-state {
+    padding: 2rem;
+    border: 1px dashed var(--border-color);
+    border-radius: 16px;
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+
+  .empty-state h2 {
+    margin: 0;
+  }
+
+  .photo-month {
+    margin-bottom: 2rem;
+  }
+
+  .photo-month h2 {
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+    color: var(--accent);
+  }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .photo-card {
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.88);
+    cursor: zoom-in;
+    overflow: hidden;
+  }
+
+  .photo-card img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .photo-card img.is-broken {
+    display: none;
+  }
+
+  .photo-dialog {
+    max-width: min(92vw, 1280px);
+    max-height: 90vh;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    background-color: #fff;
+  }
+
+  .photo-dialog::backdrop {
+    background: rgba(18, 3, 10, 0.7);
+  }
+
+  .photo-dialog img {
+    display: block;
+    max-width: 100%;
+    max-height: 72vh;
+    margin: 0 auto;
+    border-radius: 8px;
+  }
+
+  .photo-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding-top: 0.75rem;
+  }
+
+  .photo-dialog-actions a,
+  .photo-dialog-actions button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0.25rem 0.8rem;
+    border: 1px solid rgba(236, 72, 153, 0.25);
+    border-radius: 999px;
+    background: rgba(236, 72, 153, 0.05);
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .photo-dialog-actions a:hover,
+  .photo-dialog-actions button:hover {
+    background: rgba(236, 72, 153, 0.09);
+  }
+
+  @media (max-width: 720px) {
+    .photos-main {
+      width: min(100vw - 1rem, 42rem);
+      padding-top: 1rem;
+    }
+
+    .photos-hero {
+      padding-left: 0.9rem;
+      padding-right: 0.9rem;
+    }
+  }
+</style>
